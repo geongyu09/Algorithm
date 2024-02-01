@@ -3,7 +3,7 @@
 > 연결 리스트
 > 데이터 요소의 선형 집합. 각각의 원소들읜 자시 자신 다음의 원소를 가지킨다.
 
-![Untitled](Linked-list%20bbff22e1556b43f39ad536d36da1b389/Untitled.png)
+![Untitled](https://github.com/geongyu09/Algorithm/assets/67491015/ac511bfd-9570-4155-9354-17a6ee9d630b)
 
 ### 시간 복잡도
 
