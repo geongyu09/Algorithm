@@ -40,16 +40,54 @@ class LinkedList {
     this.head = node;
     this.length++;
   }
+  search(data) {
+    //n은 레퍼런스이다.
+    let n = this.head;
+    while (n && n.data != data) n = n.next;
+    return Boolean(n);
+  }
+
+  remove(data) {
+    if (!this.head) return false;
+    let n = this.head;
+    //맨 앞에 있는 경우
+    if (n.data == data) {
+      this.head = this.head.next;
+      this.length--;
+      return true;
+    }
+    //중간에 있는 경우
+    while (n.next && n.next.data != data) n = n.next;
+    if (n.next) {
+      n.next = n.next.next;
+      this.length--;
+      return true;
+    }
+    return false;
+  }
+
+  traverse() {
+    let n = this.head;
+    while (n) {
+      console.log(n.data);
+      n = n.next;
+    }
+  }
 }
 
 const linkedlist = new LinkedList();
 linkedlist.append(1);
 //데이터를 부를 때는 이처럼
-console.log(linkedlist.head.data);
-console.log(linkedlist.tail.data);
+// console.log(linkedlist.head.data);
+// console.log(linkedlist.tail.data);
 linkedlist.append(2);
 linkedlist.append(3);
-console.log(linkedlist.head.next.data);
-console.log(linkedlist.head.next.next.data);
 linkedlist.prepend(0);
-console.log(linkedlist.head.data);
+// console.log(linkedlist.head.next.data);
+// console.log(linkedlist.head.next.next.data);
+// linkedlist.prepend(0);
+// console.log(linkedlist.head.data);
+// console.log(linkedlist.search(1));
+linkedlist.remove(2);
+// console.log(linkedlist.head.data);
+linkedlist.traverse();

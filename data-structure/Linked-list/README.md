@@ -1,18 +1,65 @@
-# 링크드 리스트
+# Linked-list
 
-**링크드 리스트**는 데이터 요소의 선형 집합이며, 이 집합에서 논리적 저장 순서는 메모리의 물리적 저장 순서와 일치하지 않습니다. 그 대신, 각각의 원소들은 자기 자신 다음의 원소를 가리킵니다.
-**링크드 리스트**는 순서를 표현하는 노드들의 집합으로 이루어져 있습니다. 간단하게, 각각의 노드들은 데이터와 다음 순서의 노드를 가리키는 레퍼런스로 이루어져 있습니다. (링크라고 부릅니다.) 이 자료구조는 순회하는 동안 순서에 상관없이 효율적인 삽입이나 삭제가 가능합니다. 더 복잡한 변형은 추가적인 링크를 더해, 임의의 원소 참조로부터 효율적인 삽입과 삭제를 가능하게 합니다.
-**링크드 리스트**의 단점은 접근 시간이 선형이라는 것이고, 병렬처리도 하지 못합니다. 임의 접근처럼 빠른 접근은 불가능합니다. 링크드 리스트에 비해 배열이 더 나은 캐시 지역성을 가지고 있습니다.
+> 연결 리스트
+> 데이터 요소의 선형 집합. 각각의 원소들읜 자시 자신 다음의 원소를 가지킨다.
 
-![Linked List](./images/linked-list.jpeg)
+![Untitled](Linked-list%20bbff22e1556b43f39ad536d36da1b389/Untitled.png)
 
-_Made with [okso.app](https://okso.app)_
+### 시간 복잡도
 
-## 기본 연산에 대한 수도코드
+| 접근 | 탐색 | 삽입 | 삭제 |
+| ---- | ---- | ---- | ---- |
+| O(n) | O(n) | O(1) | O(n) |
 
-### 삽입
+### 공간 복잡도
 
-```text
+O(n)
+
+# class 구현
+
+## Node
+
+노드의 경우 본인의 데이터와 다음을 가리키는 레퍼런스 2개의 데이터를 가진다.
+
+```tsx
+//노드
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
+  }
+}
+```
+
+## LinkedList
+
+연결 리스트는 전체적으로 Node 객체들을 관리하게 된다.
+
+```jsx
+//연결리스트
+class LinkedList {
+  //head, tail, current 및 필요한 값들을 정리해줄 수 있다.
+  constructor() {
+    this.head = null; //head는 레퍼런스로, 가장 처음의 노드를 가리킨다.
+    this.tail = null;
+    this.current = null;
+    this.length = 0;
+  }
+}
+```
+
+필요한 데이터는 상황마다 다를 수 있으며 대체로 아래와 같은 것을 제공해주는 경우가 많다.
+
+- `head : null | ref` : 가장 처음에 있는 노드를 가리킨다. 만약 연결 리스트에 아무런 노드가 없다면 null이다.
+- `tail : null | ref` : 가장 마직에 있는 노드를 가리킨다. 만약 연결 리스트에 아무런 노드가 없다면 null값을 가진다.
+- `current : null | ref` : 가장 최근에 사용된 노드를 가리킨다. 연결 리스트에 아무런 노드가 없다면 null값을 가진다.
+- `length : number` : 노드의 길이를 나타낸다.
+
+### 삽입(insert)
+
+- 뒤에 추가
+
+```jsx
 Add(value)
   Pre: 리스트에 추가할 값
   Post: 리스트의 맨 마지막에 있는 값
@@ -27,7 +74,25 @@ Add(value)
 end Add
 ```
 
-```text
+```jsx
+	append(data) {
+    let node = new Node(data);
+    //처음이라면
+    if (!this.head) {
+      this.head = node;
+      this.tail = node;
+      this.length = 1;
+    } else {
+      this.tail.next = node;
+      this.tail = node;
+      this.length++;
+    }
+  }
+```
+
+- 앞에 추가
+
+```jsx
 Prepend(value)
  Pre: 리스트에 추가할 값
  Post: 리스트의 맨 앞에 있는 값
@@ -40,9 +105,24 @@ Prepend(value)
 end Prepend
 ```
 
-### 탐색
+```jsx
+	prepend(data) {
+    let node = new Node(data);
+    if (!this.head) {
+      this.head = node;
+      this.tail = node;
+      this.length = 1;
+      return;
+    }
+    node.next = this.head;
+    this.head = node;
+    this.length++;
+  }
+```
 
-```text
+### 탐색(search)
+
+```jsx
 Contains(head, value)
   Pre: head는 리스트에서 맨 앞 노드
        value는 찾고자 하는 값
@@ -59,9 +139,26 @@ Contains(head, value)
 end Contains
 ```
 
-### 삭제
+```jsx
+  contains(data) {
+    //n은 레퍼런스이다.
+    let n = this.head;
+    while (n && n.data != data) n = n.next;
+    return Boolean(n);
+  }
+```
 
-```text
+### 삭제(delete)
+
+1. 빈 리스트인가?
+   1. y: 끝
+2. 맨 첫 요소인가?
+   1. y: `head` 한칸 옮기고 맨 앞 요소의 `next = null`
+3. 중간 / 끝 요소인가?
+   1. y: 순회하며(while) 데이터를 찾음. 데이터 있는가?
+      1. y : 제거(이전 노드의 next = 다음 노드)
+
+```jsx
 Remove(head, value)
   Pre: head는 리스트에서 맨 앞 노드
        value는 삭제하고자 하는 값
@@ -94,9 +191,33 @@ Remove(head, value)
 end Remove
 ```
 
-### 순회
+```jsx
+remove(data) {
+    if (!this.head) return false;
+    let n = this.head;
+    //맨 앞에 있는 경우
+    if (n.data == data) {
+      this.head = this.head.next;
+      this.length--;
+      return true;
+    }
+    //중간에 있는 경우
+    while (n.next && n.next.data != data) n = n.next;
+    if (n.next) {
+      n.next = n.next.next;
+      this.length--;
+      return true;
+    }
+    return false;
+  }
+```
 
-```text
+### **순회**
+
+1. n 정의. n = this.head
+2. while(n)
+
+```jsx
 Traverse(head)
   Pre: head는 리스트에서 맨 앞 노드
   Post: 순회된 항목들
@@ -108,41 +229,41 @@ Traverse(head)
 end Traverse
 ```
 
-### 역순회
-
-```text
-ReverseTraversal(head, tail)
-  Pre: 같은 리스트에 들어 있는 맨 앞, 맨 뒤 노드
-  Post: 역순회된 항목들
-  if tail != ø
-    curr ← tail
-    while curr != head
-      prev ← head
-      while prev.next != curr
-        prev ← prev.next
-      end while
-      yield curr.value
-      curr ← prev
-    end while
-   yield curr.value
-  end if
-end ReverseTraversal
+```jsx
+traverse() {
+    let n = this.head;
+    while (n) {
+      console.log(n.data);
+      n = n.next;
+    }
+  }
 ```
 
-## 복잡도
+# Object로 구현
 
-### 시간 복잡도
+```jsx
+const linkedlist = {
+  data: 0,
+  next: {
+    data: 1,
+    next: {
+      data: 2,
+      next: null,
+    },
+  },
+};
 
-| 접근 | 탐색 | 삽입 | 삭제 |
-| :--: | :--: | :--: | :--: |
-| O(n) | O(n) | O(1) | O(n) |
+//값 가져오기
+console.log(linkedlist.data);
+console.log(linkedlist.next.data);
+console.log(linkedlist.next.next.data);
 
-### 공간 복잡도
+//값 변경하기
+linkedlist.next.data = 3;
 
-O(n)
+//값 추가하기
+linkedlist.next.next.next = { data: 4, next: null };
 
-## 참조
-
-- [Wikipedia](https://en.wikipedia.org/wiki/Linked_list)
-- [YouTube](https://www.youtube.com/watch?v=njTh_OwMljA&index=2&t=1s&list=PLLXdhg_r2hKA7DPDsunoDZ-Z769jWn4R8)
-- [ref](https://github.com/trekhleb/javascript-algorithms/blob/master/src/data-structures/linked-list/README.ko-KR.md)
+//값 삭제하기
+linkedlist.next = linkedlist.next.next;
+```
